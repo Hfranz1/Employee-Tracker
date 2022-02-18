@@ -198,3 +198,58 @@ addEmployee = async () => {
     console.log('New employee has been added!')
     init();
 };
+//employee role funtion
+updateEmployeeRole = () => {
+    db.query('SELECT * FROM employees.employee;',
+        (err, results) => {
+
+            const employees = [];
+
+            results.forEach(result => employees.push(
+                {
+                    name: result.first_name + ' ' + result.last_name,
+                    value: result.id
+                })
+            );
+
+            return inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'getEmployee',
+                    message: 'Which emplayee do you wish to update?',
+                    choices: employees
+                },
+            ])
+
+                .then((data) => {
+
+                    const employeeId = data.getEmployee;
+
+                    db.query('SELECT * FROM emplayees.role;',
+
+                        (err, results) => {
+
+                            const roles = [];
+
+                            results.forEach(result => roles.push(
+                                {
+                                    name: result.title,
+                                    value: result.id
+                                })
+                            );
+
+                            return inquirer.prompt([
+                                {
+                                    type: 'list',
+                                    name: 'updateRole',
+                                    message: "What is the employee's new role?",
+                                    choices: roles
+                                },
+                            ])
+
+
+                        }
+                    )
+                })
+        })
+}
