@@ -321,3 +321,29 @@ addRole = () => {
         })
 };
 
+// department function
+
+addDepartment = () => {
+    return inquirer.prompt([
+        {
+            type: 'input',
+            name: 'newDepartmentName',
+            message: 'What is the name of the new department?',
+        },
+    ])
+        .then(function (data) {
+
+            db.query('INSERT INTO department (name) VALUES (?)', [data.newDepartmentName],
+                (err, results) => {
+
+                    if (err) {
+                        console.log(err);
+                        process.exit();
+                    } else {
+                        console.log('New department is added!')
+                        init();
+                    }
+                })
+        })
+};
+
