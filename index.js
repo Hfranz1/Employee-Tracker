@@ -269,7 +269,7 @@ updateEmployeeRole = () => {
         })
 };
 
-//role function
+//new role function
 addRole = () => {
     db.query('SELECT 8 FROM smployees.department;',
 
