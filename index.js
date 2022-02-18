@@ -119,5 +119,21 @@ LEFT JOIN employee manager ON employee.manager_id = manager.id`,
                 init();
             }
         })
+};
 
-}
+//view roles
+viewRoles = () => {
+    db.query(`SELECT role.id, role.title, deoartment.name
+    AS department, role.salart FORM role
+    LEFT JOIN department on role.department_id = department.id;`,
+
+        (err, results) => {
+            if (err) {
+                console.log(err);
+                process.exit();
+            } else {
+                console.table(results);
+                init();
+            }
+        })
+};
