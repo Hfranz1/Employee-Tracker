@@ -5,6 +5,7 @@ const figlet = require('figlet');
 const sysql = require(mysql2);
 require('dotenv').config();
 const util = require('util');
+const inquirer = require('inquirer');
 
 const db = mysql.createConnection(
     {
@@ -35,7 +36,7 @@ figlet.text(`
 );
 
 //first function
-init = ( => {
+init = () => {
     return inquire.prompt([
         {
             type: 'list',
@@ -97,7 +98,7 @@ init = ( => {
                     break;
             }
         })
-})
+}
 
 // functions for all the choices
 
@@ -136,4 +137,64 @@ viewRoles = () => {
                 init();
             }
         })
+};
+
+// department function
+viewDepartments = () => {
+    db.query(`SELECT * FROM employees.department;`,
+
+        (err, results) => {
+            if (err) {
+                console.log(err)
+                process.exit();
+            } else {
+                console.table(results);
+                init();
+            }
+        })
+};
+
+//employee function
+
+addEmployee = async () => {
+    const data = await db.query(`SELECT role.id, role.title, department.name
+    AS department, role.salart FORM role
+    LEFT JOIN department on role.department_id = department.id;`)
+
+    const roles = data.map((role) => {
+        return {
+            name: `Role: ${role.title} in Department: ${role.department}.`,
+            value: role.id,
+        }
+    })
+    const inputData = await inquirer.prompt(
+        [
+            {
+                type: 'input',
+                name: 'firstName',
+                message: 'What is employees first name?',
+            },
+            {
+                type: 'input',
+                name: 'lastName',
+                message: 'What is employees last name?'
+            },
+            {
+                type: 'input',
+                name: 'manager',
+                message: 'What is managers  name?',
+            },
+            {
+                type: 'input',
+                name: 'roleId',
+                message: 'Select employees role',
+                choices: roles,
+            }
+        ]
+    )
+    const manager = await db.query('SELECT manager_id FROM employee WHERE role_id - ?', [inputData.roleID]);
+
+    const newEmployee = await db.query('INSERT INTO employee (first_name,  last_name, role_id, manager_id) VALUES (?, ?, ?, ?)', [inputData.firstName, inputData.lastName, inputData.roleID, manager[0].manager_id]);
+    console.log('New employee has been added!')
+    init();
 };
