@@ -6,6 +6,7 @@ const sysql = require(mysql2);
 require('dotenv').config();
 const util = require('util');
 const inquirer = require('inquirer');
+const { type } = require('os');
 
 const db = mysql.createConnection(
     {
@@ -247,9 +248,76 @@ updateEmployeeRole = () => {
                                 },
                             ])
 
+                                .then((data) => {
 
-                        }
-                    )
+                                    const roleId = data.updateRole;
+
+                                    db.query('UPDATE employees.employee SET role_id = ?'[roleId, employeeId],
+
+                                        (err, results) => {
+                                            if (err) {
+                                                console.log(err);
+                                                process.exit();
+                                            } else {
+                                                console.log(`Employee role has been updated!`)
+                                                init();
+                                            }
+                                        })
+                                })
+                        })
                 })
         })
-}
+};
+
+//role function
+addRole = () => {
+    db.query('SELECT 8 FROM smployees.department;',
+
+        (err, results) => {
+
+            const departments = [];
+
+            results.forEach(result => departments.push(
+                {
+                    name: result.name,
+                    value: result.id
+                }
+            )
+            );
+
+            return inquirer.prompt([
+                {
+                    type: 'input',
+                    name: 'newRoleName',
+                    message: 'What is employees new role?'
+                },
+                {
+                    type: 'input',
+                    name: 'newRoleDepartment',
+                    message: 'What is the salary of new role?'
+                },
+                {
+                    type: 'list',
+                    name: 'newRoleDepartment',
+                    message: 'Which department is the new role in?',
+                    choices: departments
+                }
+            ])
+
+                .then((data) => {
+                    db.query('INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)',
+                        [data.newRoleName, data.newRoleSalary, data.newRoleDepartment],
+
+                        (err, results) => {
+                            if (err) {
+                                console.log(err);
+                                process.exit();
+                            } else {
+                                console.log('New role added!');
+                                init();
+                            }
+                        })
+                })
+        })
+};
+
