@@ -431,3 +431,45 @@ deleteRole = () => {
         })
 };
 
+// delete department function
+deleteDepartment = () => {
+    db.query('SELECT * FROM employees.department;',
+
+        (err, results) => {
+
+            const departments = [];
+            results.forEach(result => department.push(
+                {
+                    name: result.name,
+                    value: result.id
+                }
+            )
+            );
+
+            return inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'deleteDepartment',
+                    message: 'What department do you wish to delete?',
+                    choices: departments
+                },
+            ])
+
+                .then((data) => {
+
+                    const departmentId = data.deleteDepartment;
+                    db.query('DELETE FROM department WHERE id = ?', [departmentId],
+
+                        (err, results) => {
+
+                            if (err) {
+                                console.log(err);
+                                process.exit();
+                            } else {
+                                console.log('Department deleted!')
+                                init();
+                            }
+                        })
+                })
+        })
+};
