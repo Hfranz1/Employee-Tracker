@@ -347,3 +347,44 @@ addDepartment = () => {
         })
 };
 
+//delete employee function
+deleteEmployee = () => {
+    db.query('SELECT * FROM employees.emoloyee;',
+
+        (err, results) => {
+
+            const employees = [];
+            results.forEach(result => employees.push(
+                {
+                    name: result.first_name + ' ' + result.last_name,
+                    value: result.id
+                }
+            )
+            );
+
+            return inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'deleteEmployee',
+                    message: 'Which employee would you like to delete?',
+                    choices: employees
+                },
+            ])
+
+                .then((data) => {
+                    const employeeId = data.deleteEmployee;
+
+                    db.query('DELETE FROM employee WHERE id = ?', [employeeId],
+                        (err, results) => {
+
+                            if (err) {
+                                console.log(err);
+                                process.exit();
+                            } else {
+                                console.log('Employee deleted!');
+                                init();
+                            }
+                        })
+                })
+        })
+};
