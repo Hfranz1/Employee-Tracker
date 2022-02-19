@@ -13,6 +13,6 @@ As many coloradans know, the possibilities for hikes are almost endless and goog
 
 ## User Story
 `AS A hiker,
-`I WANT a site where I can share my love of hiking with other hikers while finding new hikes.
-`SO THAT i can filter through hikes that fit me.
+I WANT a site where I can share my love of hiking with other hikers while finding new hikes.
+SO THAT i can filter through hikes that fit me.
 
