@@ -388,3 +388,46 @@ deleteEmployee = () => {
                 })
         })
 };
+
+//delete role runction
+deleteRole = () => {
+
+    db.query('SELECT * FROM employees.role;',
+        (err, results) => {
+            const roles = [];
+
+            results.forEach(result => roles.push(
+                {
+                    name: result.title,
+                    value: result.id
+                })
+            );
+
+            return inquirer.prompt([
+                {
+                    type: 'list',
+                    name: 'deleteRole',
+                    message: 'What role do you want to delete?',
+                    choices: roles,
+                },
+            ])
+
+                .then((data) => {
+
+                    const roleId = data.deleteRole;
+
+                    db.query('DELETE FROM role WHERE id = ?', [roleId],
+                        (err, results) => {
+
+                            if (err) {
+                                console.log(err);
+                                process.exit();
+                            } else {
+                                console.log('Role deledted!');
+                                init();
+                            }
+                        })
+                })
+        })
+};
+
