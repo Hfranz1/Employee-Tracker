@@ -315,6 +315,7 @@ addRole = () => {
                             } else {
                                 console.log('New role is added');
                                 init();
+
                             }
                         })
                 })
